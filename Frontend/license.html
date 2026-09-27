@@ -1,0 +1,109 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>تنشيط النظام - الشركة العربية</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #020617;
+            color: #f8fafc;
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .card {
+            background: #0f172a;
+            padding: 40px;
+            border-radius: 30px;
+            border: 1px solid #1e293b;
+            width: 400px;
+            text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        .logo { color: #eab308; font-size: 50px; margin-bottom: 20px; }
+        h1 { font-size: 22px; font-weight: 900; margin-bottom: 10px; }
+        p { color: #94a3b8; font-size: 13px; margin-bottom: 30px; line-height: 1.6; }
+        .device-id-box {
+            background: #020617;
+            padding: 15px;
+            border-radius: 15px;
+            border: 1px dashed #334155;
+            margin-bottom: 20px;
+        }
+        .device-id-label { font-size: 10px; color: #64748b; font-weight: bold; margin-bottom: 5px; }
+        .device-id-value { font-family: monospace; color: #fbbf24; font-weight: bold; font-size: 18px; }
+        input {
+            width: 100%;
+            background: #020617;
+            border: 1px solid #334155;
+            padding: 15px;
+            border-radius: 15px;
+            color: white;
+            text-align: center;
+            font-weight: bold;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+        input:focus { border-color: #eab308; }
+        button {
+            width: 100%;
+            background: #eab308;
+            color: black;
+            border: none;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        button:hover { background: #facc15; transform: scale(1.02); }
+        .error { color: #f87171; font-size: 12px; margin-top: 10px; font-weight: bold; display: none; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">⚙️</div>
+        <h1 id="title">تنشيط نظام العربية</h1>
+        <p id="desc">يرجى إدخال كود التفعيل لبدء الفترة التجريبية (30 يوم).</p>
+        
+        <div class="device-id-box">
+            <div class="device-id-label">معرف الجهاز (DEVICE ID)</div>
+            <div class="device-id-value" id="deviceId">LOADING...</div>
+        </div>
+
+        <input type="text" id="licenseKey" placeholder="أدخل كود التفعيل هنا..." maxlength="15">
+        <button onclick="submitKey()">تفعيل النظام الآن</button>
+        <div id="error" class="error">كود التفعيل غير صحيح، يرجى المحاولة مرة أخرى</div>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        ipcRenderer.on('setup-ui', (event, data) => {
+            document.getElementById('deviceId').innerText = data.deviceId;
+            if (data.status === 'REQUIRE_FINAL') {
+                document.getElementById('title').innerText = 'انتهت الفترة التجريبية';
+                document.getElementById('desc').innerText = 'انتهت الـ 30 يوم المسموح بها. يرجى إدخال كود التفعيل النهائي للاستمرار.';
+            }
+        });
+
+        function submitKey() {
+            const key = document.getElementById('licenseKey').value.trim();
+            if (!key) return;
+            ipcRenderer.send('submit-key', key);
+        }
+
+        ipcRenderer.on('auth-error', () => {
+            document.getElementById('error').style.display = 'block';
+        });
+    </script>
+</body>
+</html>

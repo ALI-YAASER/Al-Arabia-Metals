@@ -1,0 +1,51 @@
+
+{
+  "name": "al-arabia-inventory-pro",
+  "version": "4.0.0",
+  "description": "النظام المتكامل لإدارة المخازن والعهد - الشركة العربية لصهر وتشكيل المعادن",
+  "main": "main.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "vite",
+    "start": "electron .",
+    "build": "vite build && electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3",
+    "vite": "^5.0.0",
+    "@vitejs/plugin-react": "^4.2.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "lucide-react": "^0.562.0",
+    "recharts": "^3.6.0",
+    "date-fns": "^4.1.0",
+    "xlsx": "0.18.5"
+  },
+  "build": {
+    "appId": "com.alarabia.inventory",
+    "productName": "العربية للمخازن Pro",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "main.js",
+      "license-manager.js",
+      "license.html",
+      "icon.ico"
+    ],
+    "win": {
+      "target": "nsis",
+      "requestedExecutionLevel": "requireAdministrator"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "shortcutName": "العربية للمخازن Pro"
+    }
+  }
+}
